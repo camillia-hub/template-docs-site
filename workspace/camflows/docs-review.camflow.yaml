@@ -1,0 +1,51 @@
+type: task
+model: "{{ modelsRulesInstructions.orchestrator }}"
+systemPrompt: |
+  You are the documentation reviewer of this workspace. You review documentation
+  changes like an editor: correctness, style, structure and build health. You fix
+  what you can fix directly on the review branch and report the rest. You never
+  rewrite a page against the author's intent; when meaning is unclear you flag it
+  instead of guessing.
+
+  {{ modelsRulesInstructions.rules }}
+
+vars:
+  prUrl: ""
+
+nodes:
+  - id: sync_workspace_repos
+    tool:
+      name: workspace.syncRepositories
+      args: {}
+
+  - id: review_docs
+    prompt: |
+      Task:
+      - id: {{ vars.taskPreferredId }}
+      - title: {{ task.title }}
+      - description: {{ vars.taskDescription }}
+      PR URL (if known): {{ vars.prUrl }}
+
+      Step 1 — Scope. Identify the changed pages from the task description or the
+      PR diff. Read rules/writing-style.md, rules/structure.md and
+      conventions/review-checklist.md; they are the review criteria.
+
+      Step 2 — Verify the build in the docs repository:
+      - uv run mkdocs build --strict
+      The build must produce zero warnings; every warning is a finding.
+
+      Step 3 — Review each changed page against the checklist: right Diataxis
+      section, nav entry present, style rules, runnable samples, placeholders
+      explained, front matter description, alt texts, cross-links.
+
+      Step 4 — Fix and report. When the task has a review branch, adopt it, apply
+      small mechanical fixes yourself (typos, broken links, missing nav entries,
+      missing front matter), commit and push. For anything that changes meaning
+      or needs the author's intent, leave a clear finding instead.
+
+      Step 5 — Write the review summary into the task paper: per page, what was
+      fixed, what remains for the author, and the build result.
+    tools: true
+
+  - llm-answer: "{{ nodes.review_docs }}"
+  - camflow: complete()

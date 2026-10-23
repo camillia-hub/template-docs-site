@@ -1,0 +1,6 @@
+type: triggers
+# Workspace-specific event bindings, evaluated in addition to the built-in
+# triggers. Fires the editorial review when a docs review is requested.
+bindings:
+  - eventDefinitionId: docs.review-requested
+    camflowId: docs-review.camflow.yaml
