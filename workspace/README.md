@@ -1,6 +1,6 @@
 # Documentation workspace: MkDocs Material
 
-This workspace produces the product's documentation site: a docs-as-code product
+This workspace produces the **{{ projectName }}** documentation site: a docs-as-code product
 built with MkDocs Material, versioned and published from CI (see
 `repositories/docs.md`).
 

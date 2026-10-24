@@ -1,0 +1,11 @@
+{
+  "repositories": [
+    {
+      "key": "docs",
+      "label": "Documentation site",
+      "description": "MkDocs documentation site",
+      "required": true,
+      "overrideContent": false
+    }
+  ]
+}
